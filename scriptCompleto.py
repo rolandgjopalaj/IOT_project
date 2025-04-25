@@ -11,7 +11,7 @@ import threading
 from datetime import datetime
 
 # ==== CONFIGURATION ====
-AUTHORIZED_NAMES = ["andi", "K_nex"]  # Case-sensitive
+AUTHORIZED_NAMES = ["andi"]  # Case-sensitive
 GPIO_PIN = 26
 HTTP_HOST = ''
 HTTP_PORT = 8000
