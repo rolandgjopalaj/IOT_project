@@ -29,7 +29,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            with open('index.html', 'rb') as file:
+            with open('public_web/index.html', 'rb') as file:
                 html_content = file.read()
             self.wfile.write(html_content)
         else:
@@ -68,7 +68,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
                 #salva i log nel file accessi.txt
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                with open('accessi.txt', 'a') as log_file:
+                with open('public_web/accessi.txt', 'a') as log_file:
                     log_file.write(f"Time: {timestamp} - Utente: {utente} - Status: {status}\n")
 
             except Exception as e:

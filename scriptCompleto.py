@@ -46,6 +46,12 @@ def open_door(duration=5):
             door_open_flag = False
             print("[INFO] Door closed")
 
+def save_log(utente, status):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with open('public_web/accessi.txt', 'a') as log_file:
+        log_file.write(f"Time: {timestamp} - Utente: {utente} - Status: {status}\n")
+
+
 def process_frame(frame):
     # Resize and convert frame for face recognition
     resized_frame = cv2.resize(frame, (0, 0), fx=(1/cv_scaler), fy=(1/cv_scaler))
@@ -68,6 +74,9 @@ def process_frame(frame):
         if not door_open_flag:
             threading.Thread(target=open_door).start()
             print(f"[INFO] Door triggered by face: {name}")
+            # Log the access
+            save_log(name, "ENTRATO")
+
     return name, authorized_face_detected
 
 def face_recognition_loop():
@@ -92,7 +101,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             try:
-                with open('index.html', 'rb') as file:
+                with open('public_web/index.html', 'rb') as file:
                     html_content = file.read()
                 self.wfile.write(html_content)
             except Exception:
@@ -130,9 +139,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.wfile.write(b"Accesso Negato!")
 
                 # Log the access
-                timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                with open('accessi.txt', 'a') as log_file:
-                    log_file.write(f"Time: {timestamp} - Utente: {utente} - Status: {status}\n")
+                save_log(utente, status)
 
             except Exception as e:
                 print(f"Errore durante l'elaborazione della richiesta POST: {e}")
