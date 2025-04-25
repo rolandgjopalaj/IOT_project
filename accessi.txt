@@ -1,0 +1,10 @@
+Time: 2025-04-20 19:33:11 - Utente: sconosciuto - Status: NEGATO
+Time: 2025-04-20 19:33:34 - Utente: andi - Status: ENTRATO
+Time: 2025-04-25 16:27:44 - Utente: Andi - Status: ENTRATO
+Time: 2025-04-25 16:30:33 - Utente: Nsns - Status: ENTRATO
+Time: 2025-04-25 16:31:46 - Utente: Nans - Status: ENTRATO
+Time: 2025-04-25 16:42:22 - Utente: Hshsh - Status: ENTRATO
+Time: 2025-04-25 16:42:43 - Utente: Uduf - Status: NEGATO
+Time: 2025-04-25 16:43:11 - Utente: Fuuf - Status: NEGATO
+Time: 2025-04-25 16:48:21 - Utente: Andi - Status: ENTRATO
+Time: 2025-04-25 17:04:50 - Utente: asdas - Status: ENTRATO
