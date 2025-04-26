@@ -11,11 +11,12 @@ import threading
 from datetime import datetime
 
 # ==== CONFIGURATION ====
-AUTHORIZED_NAMES = ["andi"]  # Case-sensitive
+AUTHORIZED_NAMES = ["andi", "peppe"]  # Case-sensitive
 GPIO_PIN = 26
 HTTP_HOST = ''
 HTTP_PORT = 8000
 ENCODINGS_FILE = "encodings.pickle"
+PASS_HASH = "3ba16165d819648cc6c72edeac4e970718910056ff1e987ed89832d194731517"
 
 # ==== GLOBALS ====
 output = LED(GPIO_PIN)
@@ -106,6 +107,18 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(html_content)
             except Exception:
                 self.wfile.write(b"<html><body><h1>Index file not found.</h1></body></html>")
+        
+        elif self.path == '/accessi':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            try:
+                with open('public_web/accessi.html', 'rb') as file:
+                    html_content = file.read()
+                self.wfile.write(html_content)
+            except Exception:
+                self.wfile.write(b"<html><body><h1>Accessi file not found.</h1></body></html>")
+
         else:
             self.send_error(404, "File Not Found: %s" % self.path)
 
@@ -121,7 +134,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 utente = data.get("utente")
                 parola_dordine = data.get("parola_dordine")
                 
-                if parola_dordine == "apriti sesamo":
+                if parola_dordine == PASS_HASH:
                     # Open the door in a separate thread if not already open
                     if not door_open_flag:
                         threading.Thread(target=open_door).start()
@@ -144,8 +157,45 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 print(f"Errore durante l'elaborazione della richiesta POST: {e}")
                 self.send_error(500, "Errore interno del server")
+        
+        elif self.path == '/accessi':
+            try:
+                content_length = int(self.headers['Content-Length'])
+                post_data_bytes = self.rfile.read(content_length)
+                post_data_str = post_data_bytes.decode('utf-8')
+                data = json.loads(post_data_str)
+                parola_dordine = data.get("parola_dordine")
+
+                # Cambia la password qui se vuoi
+                if parola_dordine == PASS_HASH:
+                    try:
+                        with open('public_web/accessi.txt', 'r') as log_file:
+                            logs = log_file.read()
+                        self.send_response(200)
+                        self.send_header('Content-type', 'text/plain')
+                        self.end_headers()
+                        self.wfile.write(logs.encode())
+                    except Exception as e:
+                        self.send_response(500)
+                        self.send_header('Content-type', 'text/plain')
+                        self.end_headers()
+                        self.wfile.write(f"Errore lettura log: {e}".encode())
+                else:
+                    self.send_response(403)
+                    self.send_header('Content-type', 'text/plain')
+                    self.end_headers()
+                    self.wfile.write(b"Password errata!")
+            except Exception as e:
+                self.send_response(400)
+                self.send_header('Content-type', 'text/plain')
+                self.end_headers()
+                self.wfile.write(f"Errore nella richiesta: {e}".encode())
+        
         else:
             self.send_error(404, "Endpoint Not Found: %s" % self.path)
+
+
+        
 
 def run_http_server():
     server_address = (HTTP_HOST, HTTP_PORT)

@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Controllo Accesso Porta</title>
+    <title>Visualizza Log Accessi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 :root {
@@ -31,7 +31,7 @@ body {
     border-radius: 1.5rem;
     box-shadow: var(--shadow);
     width: 100%;
-    max-width: 380px;
+    max-width: 420px;
     border: 1px solid var(--border);
     backdrop-filter: blur(16px) saturate(180%);
     transition: box-shadow 0.3s, transform 0.3s;
@@ -131,6 +131,7 @@ button:hover, button:focus {
     border: 1.5px solid transparent;
     background: rgba(245,245,247,0.7);
     box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    word-break: break-word;
 }
 
 .success {
@@ -145,117 +146,92 @@ button:hover, button:focus {
     border-color: var(--error);
 }
 
-#countdown {
-    color: #86868b;
-    font-size: 0.98em;
-    margin-left: 0.5em;
+#logs {
+    margin-top: 1.5rem;
+    text-align: left;
+    background: #f5f5f7;
+    border: 1.5px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.2rem 1rem;
+    font-size: 1.01rem;
+    color: #22223b;
+    white-space: pre-wrap;
+    max-height: 350px;
+    overflow-y: auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    display: none;
 }
 
     </style>
 </head>
 <body>
     <div class="login-card">
-        <h1>Controllo Accesso</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <input type="text" 
-                       id="utente" 
-                       placeholder="Nome operatore"
-                       autocomplete="off">
-            </div>
+        <h1>Visualizza Log Accessi</h1>
+        <form id="accessiForm" autocomplete="off">
             <div class="form-group">
                 <input type="password" 
-                       id="password" 
+                       id="parola_dordine" 
                        placeholder="Parola d'ordine"
                        required
                        autocomplete="current-password">
             </div>
             <div class="form-group">
-              <button type="submit">Accedi</button>
+                <button type="submit">Visualizza</button>
             </div>
-            
         </form>
-        <div id="message" class="message">
-            <span id="msgText"></span>
-            <span id="countdown" style="display:none; margin-left: 0.5em;"></span>
-        </div>
+        <div id="message" class="message error"></div>
+        <div id="logs"></div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
     <script>
-      const form = document.getElementById('loginForm');
+      const form = document.getElementById('accessiForm');
       const messageDiv = document.getElementById('message');
-      const msgText = document.getElementById('msgText');
-      const countdownSpan = document.getElementById('countdown');
-      let countdownInterval = null;
+      const logsDiv = document.getElementById('logs');
+      const button = form.querySelector('button');
 
       //encrypt password
       function hash(password) {
         return CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
         }
 
-  
       form.addEventListener('submit', async (e) => {
           e.preventDefault();
-  
-          const button = form.querySelector('button');
-          button.classList.add('loading');
           messageDiv.style.display = 'none';
-          countdownSpan.style.display = 'none';
-          clearInterval(countdownInterval);
-  
-          const payload = {
-              utente: document.getElementById('utente').value,
-              parola_dordine: hash(document.getElementById('password').value)
-          };
+          logsDiv.style.display = 'none';
+          button.classList.add('loading');
 
-          //back to blank
-          document.getElementById('utente').value = ""
-          parola_dordine: document.getElementById('password').value = ""
-  
+          const password = document.getElementById('parola_dordine').value;
+          const hashedPassword =hash(password);
+
           try {
-              const response = await fetch('/apri', {
+              const response = await fetch('/accessi', {
                   method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(payload)
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ parola_dordine: hashedPassword })
               });
-  
-              const result = await response.text();
-  
-              messageDiv.className = 'message ' +
-                  (result.includes('Consentito') ? 'success' : 'error');
-              msgText.textContent = result;
-              messageDiv.style.display = 'block';
-  
-              if(result.includes('Consentito')) {
-                  let seconds = 5;
-                  countdownSpan.textContent = `(${seconds}s)`;
-                  countdownSpan.style.display = 'inline';
-                  countdownInterval = setInterval(() => {
-                      seconds--;
-                      countdownSpan.textContent = `(${seconds}s)`;
-                      if(seconds <= 0) {
-                          clearInterval(countdownInterval);
-                          messageDiv.style.display = 'none';
-                          countdownSpan.style.display = 'none';
-                      }
-                  }, 1000);
+
+              const text = await response.text();
+
+              if (response.ok) {
+                  logsDiv.innerHTML = text.replace(/\n/g, "<br><br>");
+                  logsDiv.style.display = 'block';
+                  messageDiv.style.display = 'none';
               } else {
-                  countdownSpan.style.display = 'none';
+                  messageDiv.textContent = text || 'Password errata o errore server.';
+                  messageDiv.className = 'message error';
+                  messageDiv.style.display = 'block';
+                  logsDiv.style.display = 'none';
               }
-  
-          } catch (error) {
+          } catch (err) {
+              messageDiv.textContent = 'Errore di rete: ' + err;
               messageDiv.className = 'message error';
-              msgText.textContent = 'Errore di connessione';
               messageDiv.style.display = 'block';
-              countdownSpan.style.display = 'none';
+              logsDiv.style.display = 'none';
           } finally {
               button.classList.remove('loading');
+              form.reset();
           }
       });
-  </script>
-  
+    </script>
 </body>
 </html>
