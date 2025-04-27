@@ -151,6 +151,37 @@ button:hover, button:focus {
     margin-left: 0.5em;
 }
 
+a {
+  color: #1a1a1a;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+
+a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #0077ff;
+  transition: width 0.2s;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+a:hover,
+a:focus {
+  color: #0077ff;
+}
+
+a:hover::after,
+a:focus::after {
+  width: 100%;
+}
+
+
     </style>
 </head>
 <body>
@@ -178,6 +209,10 @@ button:hover, button:focus {
         <div id="message" class="message">
             <span id="msgText"></span>
             <span id="countdown" style="display:none; margin-left: 0.5em;"></span>
+        </div>
+
+        <div class="_link">
+            <a href="/accessi"> &rarr; Log di accessi &rarr;</a>
         </div>
     </div>
 

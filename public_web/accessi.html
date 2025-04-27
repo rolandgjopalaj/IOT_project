@@ -162,10 +162,45 @@ button:hover, button:focus {
     display: none;
 }
 
+a {
+  color: #1a1a1a;
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+
+a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #0077ff;
+  transition: width 0.2s;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+a:hover,
+a:focus {
+  color: #0077ff;
+}
+
+a:hover::after,
+a:focus::after {
+  width: 100%;
+}
+
+
     </style>
 </head>
 <body>
     <div class="login-card">
+        <div class="_link">
+            <a href="/"> &larr; Indietro (Porta) &larr; </a>
+        </div>
+
         <h1>Visualizza Log Accessi</h1>
         <form id="accessiForm" autocomplete="off">
             <div class="form-group">
@@ -182,6 +217,7 @@ button:hover, button:focus {
         <div id="message" class="message error"></div>
         <div id="logs"></div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
     <script>
       const form = document.getElementById('accessiForm');
