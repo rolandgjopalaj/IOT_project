@@ -19,3 +19,4 @@ Time: 2025-04-26 17:24:07 - Utente: andi - Status: NEGATO
 Time: 2025-04-26 17:26:21 - Utente: andi - Status: NEGATO
 Time: 2025-04-26 17:26:27 - Utente: andi - Status: ENTRATO
 Time: 2025-04-27 15:58:56 - Utente: andi - Status: ENTRATO
+Time: 2025-04-27 16:32:09 - Utente: Andi - Status: ENTRATO
