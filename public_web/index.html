@@ -158,18 +158,13 @@ input {
   font-family: inherit;
   outline: none;
 }
-input:focus {
-  border-color: var(--primary);
-  background: #fff;
-  box-shadow: 0 4px 14px rgba(120,180,255,0.11);
-}
 input::placeholder {
   color: var(--placeh);
   opacity: 1;
 }
 .icon-left {
   position: absolute;
-  left: 0.7rem;
+  left: 90%;
   top: 50%;
   transform: translateY(-50%);
   color: var(--placeh);
@@ -223,32 +218,24 @@ button:hover, button:focus {
 
 .message {
   padding: 1rem 1.3rem;
-  border-radius: 0.78rem;
   margin-top: 1.08rem;
   margin-bottom: 0.25rem;
   text-align: center;
   display: none;
   font-size: 1.03rem;
   font-weight: 500;
-  border: 1.5px solid transparent;
-  background: var(--highlight);
-  box-shadow: 0 1px 4px rgba(50,90,160,0.04);
   z-index: 1;
 }
 
 .success {
-  background: #e8fff2;
-  color: var(--success);
-  border-color: #c7fadc;
+  color: #5cb85c;
 }
 .error {
-  background: #fff2f6;
-  color: var(--error);
-  border-color: #ffd6df;
+  color: #FF0000;
 }
 
 #countdown {
-  color: #85a7c7;
+  color: #5cb85c;
   font-size: 0.99em;
   margin-left: 0.6em;
 }
@@ -321,11 +308,11 @@ a:focus::after {
     <form id="loginForm" autocomplete="off">
       <div class="form-group">
         <span class="icon-left">&#128100;</span>
-        <input type="text" id="utente" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;Nome operatore" autocomplete="off" required>
+        <input type="text" id="utente" placeholder="Nome operatore" autocomplete="off" required>
       </div>
       <div class="form-group">
         <span class="icon-left">&#128272;</span>
-        <input type="password" id="password" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;Parola d'ordine" required autocomplete="current-password">
+        <input type="password" id="password" placeholder="Parola d'ordine" required autocomplete="current-password">
       </div>
       <div class="form-group">
         <button type="submit">Accedi</button>

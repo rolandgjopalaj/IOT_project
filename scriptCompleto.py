@@ -16,13 +16,18 @@ GPIO_PIN = 26
 HTTP_HOST = ''
 HTTP_PORT = 8000
 ENCODINGS_FILE = "encodings.pickle"
-PASS_HASH = "3ba16165d819648cc6c72edeac4e970718910056ff1e987ed89832d194731517" #apriti sesamo
-#5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8 #password
 
 # ==== GLOBALS ====
 output = LED(GPIO_PIN)
 door_lock = threading.Lock()
 door_open_flag = False  # Shared flag for door state
+
+# ==== read the pass phrase ====
+def read_parola_dordine():
+    with open("parola", 'r') as file:
+        parola = file.read().strip()
+        return parola
+
 
 # ==== FACE RECOGNITION SETUP ====
 print("[INFO] loading encodings...")
@@ -135,7 +140,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 utente = data.get("utente")
                 parola_dordine = data.get("parola_dordine")
                 
-                if parola_dordine == PASS_HASH:
+                if parola_dordine == read_parola_dordine():
                     # Open the door in a separate thread if not already open
                     if not door_open_flag:
                         threading.Thread(target=open_door).start()
@@ -168,7 +173,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 parola_dordine = data.get("parola_dordine")
 
                 # Cambia la password qui se vuoi
-                if parola_dordine == PASS_HASH:
+                if parola_dordine == read_parola_dordine():
                     try:
                         with open('public_web/accessi.txt', 'r') as log_file:
                             logs = log_file.read()
