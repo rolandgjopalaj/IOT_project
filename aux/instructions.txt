@@ -1,2 +1,12 @@
 Prima bisogna attivare l'ambiente virtuale 
+# cd 
 # source face_rec/bin/activate
+# cd Desktop/IOT_project/
+
+
+Alternative (comando in una linea)
+# cd && source face_rec/bin/activate && cd Desktop/IOT_project/
+
+
+Fare partire lo script
+# python3 scriptCompleto.py
