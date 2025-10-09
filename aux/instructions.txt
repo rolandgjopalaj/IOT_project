@@ -10,3 +10,10 @@ Alternative (comando in una linea)
 
 Fare partire lo script
 # python3 scriptCompleto.py
+
+
+Git commands
+
+git add .
+git commit -m ""
+git push
