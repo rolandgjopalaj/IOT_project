@@ -36,10 +36,31 @@ cv_scaler = 4
 #funzione che calcola le frequenze assolute
 #restituisce il valore con la frequenza maggiore
 def frequenzaAssolutaPiuAlta(dati):
-    return Counter(dati).most_common(1)[0][0] # Restituisce il valore più comune
-      
+    if not dati:
+        return 0
+    else:
+        return Counter(dati).most_common(1)[0][0] # Restituisce il valore più comune
 
-def gesture_detection(duration=10):
+#avvia il comando desiderato in base alla scelta
+def gestioneDellaScelta(sceltaFinale):
+    match sceltaFinale:
+        case 1:
+            print("a")
+        case 2:
+            print("b")
+        case 3:
+            print("c")
+        case 4:
+            print("d")
+        case 5:
+            print("e")
+        case _:
+            print("Nessun comando!")
+
+
+      
+#la funzione per rilevare e riconoscere i gesti con la mano
+def gesture_detection(duration=5):
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1,
                            min_detection_confidence=0.7, min_tracking_confidence=0.7)
@@ -66,7 +87,7 @@ def gesture_detection(duration=10):
                 fingers_status.append(0)
         return fingers_status
 
-    print("[INFO] Avvio gesture detection per 10 secondi")
+    print("[INFO] Avvio gesture detection per 5 secondi")
     end_time = time.time() + duration
 
     #cerca di capira la scelta del utente 
@@ -82,17 +103,18 @@ def gesture_detection(duration=10):
         
             if results.multi_hand_landmarks:
                 for hand_landmarks in results.multi_hand_landmarks:
-                    total_fingers_up = fingers_up(hand_landmarks)
-                    print(f"Posizione dita: {total_fingers_up}")
-                    count = sum(total_fingers_up)
-                    print(f"Totale dita: {count}")
-                    scelte.append(count)
+                    #calcola quante dita sono su
+                    fingerPositions = fingers_up(hand_landmarks)
+                    contaggiDitaSu = sum(fingerPositions)
+                    print(contaggiDitaSu)
+                    scelte.append(contaggiDitaSu)
                     
             time.sleep(0.1)
         
         print(f"Le scelte: {scelte}")
         sceltaFinale = frequenzaAssolutaPiuAlta(scelte)
         print(f"Scelta finale: {sceltaFinale}")
+        gestioneDellaScelta(sceltaFinale)
 
     except KeyboardInterrupt:
         pass
@@ -105,7 +127,7 @@ def gesture_detection(duration=10):
     print("[INFO] gesture detection terminato")
 
 #attiva la possibilita di usare "hand gestures"
-def activate_dj(duration=10):
+def activate_dj(duration=5):
     global is_dj_flag
     with dj_lock:
         if not is_dj_flag:
