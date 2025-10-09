@@ -2,10 +2,7 @@ import cv2
 import os
 from datetime import datetime
 from picamera2 import Picamera2
-import time
-
-# Change this to the name of the person you're photographing
-PERSON_NAME = "K_nex"  
+import time 
 
 def create_folder(name):
     dataset_folder = "dataset"
@@ -58,4 +55,6 @@ def capture_photos(name):
     print(f"Photo capture completed. {photo_count} photos saved for {name}.")
 
 if __name__ == "__main__":
-    capture_photos(PERSON_NAME)
+    name = input("Please enter a name: ")
+    #print("You entered:", name)
+    capture_photos(name)
