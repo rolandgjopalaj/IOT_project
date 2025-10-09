@@ -8,6 +8,7 @@ from gpiozero import LED
 import threading
 import mediapipe as mp
 from collections import Counter
+import subprocess
 
 # ==== CONFIGURAZIONE ====
 AUTHORIZED_NAMES = ["andi", "peppe"]  # Modifica con i nomi autorizzati
@@ -45,15 +46,15 @@ def frequenzaAssolutaPiuAlta(dati):
 def gestioneDellaScelta(sceltaFinale):
     match sceltaFinale:
         case 1:
-            print("a")
+            subprocess.run(['amixer', 'sset', 'Master', '25%+'])
         case 2:
-            print("b")
+            subprocess.run(['amixer', 'sset', 'Master', '25%-'])
         case 3:
             print("c")
         case 4:
-            print("d")
+            subprocess.run(['playerctl', 'play'])
         case 5:
-            print("e")
+            subprocess.run(['playerctl', 'pause'])
         case _:
             print("Nessun comando!")
 
