@@ -4,6 +4,7 @@ from datetime import datetime
 from picamera2 import Picamera2
 import time 
 
+# Crea una cartella dentro il "dataset" con il nome dato dall'utente.
 def create_folder(name):
     dataset_folder = "dataset"
     if not os.path.exists(dataset_folder):
@@ -17,12 +18,12 @@ def create_folder(name):
 def capture_photos(name):
     folder = create_folder(name)
     
-    # Initialize the camera
+    # Inizializza la telecamera 
     picam2 = Picamera2()
     picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
     picam2.start()
 
-    # Allow camera to warm up
+    # Serve per dare tempo alla telecamera a "scaldarsi"
     time.sleep(2)
 
     photo_count = 0
@@ -30,31 +31,33 @@ def capture_photos(name):
     print(f"Taking photos for {name}. Press SPACE to capture, 'q' to quit.")
     
     while True:
-        # Capture frame from Pi Camera
+        # Acquisisce un'immagine dalla camera Pi e la memorizza nella variabile
         frame = picam2.capture_array()
         
-        # Display the frame
+        # Mostra il frame acquisito in una finestra chiamata 'Capture'
         cv2.imshow('Capture', frame)
         
+        # Attende per 1 millisecondo la pressione di un tasto e salva il codice del tasto premuto
         key = cv2.waitKey(1) & 0xFF
         
-        if key == ord(' '):  # Space key
-            photo_count += 1
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{name}_{timestamp}.jpg"
-            filepath = os.path.join(folder, filename)
-            cv2.imwrite(filepath, frame)
+        if key == ord(' '):  # Space key: Se premuto fa il seguente
+            photo_count += 1 # Contatore per il nr delle foto
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") # Crea una stringa con la data e ora corrente (per evitare conflitti di nome nei file
+            filename = f"{name}_{timestamp}.jpg" # Crea il nome del file(foto) prima di salvarla
+            filepath = os.path.join(folder, filename) # Ottiene il percorso completo del file all’interno della cartella specificata.
+            cv2.imwrite(filepath, frame) # Salva il frame corrente come immagine JPEG nel percorso appena generato.
+
             print(f"Photo {photo_count} saved: {filepath}")
         
-        elif key == ord('q'):  # Q key
+        elif key == ord('q'):  # Q key: Se premuto rompe il ciclo
             break
     
-    # Clean up
+    # Rilascia e chiude tutto prima di terminare
     cv2.destroyAllWindows()
     picam2.stop()
+    
     print(f"Photo capture completed. {photo_count} photos saved for {name}.")
 
 if __name__ == "__main__":
-    name = input("Please enter a name: ")
-    #print("You entered:", name)
+    name = input("Inserisci un nome: ")
     capture_photos(name)
