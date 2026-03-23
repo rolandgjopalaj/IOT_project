@@ -1,3 +1,20 @@
+# MagicHands
+
+Il sistema rileva la presenza di un volto tramite la webcam e utilizza modelli di intelligenza artificiale per verificarne l'identità confrontandola con una lista di utenti autorizzati. In caso di riconoscimento positivo, un LED verde si accende per segnalare l'accesso consentito e dare inizio a una finestra temporale di 5 secondi durante la quale l'utente può impartire comandi gestuali rapidi.
+
+Durante questo intervallo, la videocamera analizza la mano dell'utente e il numero di dita visibili (alzate) per interpretare azioni predefinite:
+
+| Dita | Azione |
+|------|--------|
+| 5 dita | Interrompe la musica |
+| 4 dita | Avvia la musica |
+| 2 dita | Riduce il volume del 25% |
+| 1 dito | Aumenta il volume del 25% |
+
+Trascorsi i 5 secondi, il LED verde si spegne automaticamente e il sistema torna in modalità di attesa, pronto a rilevare nuovamente un volto autorizzato per consentire ulteriori comandi.
+
+---
+
 # Setup Ambiente
 
 ## Installazione iniziale
